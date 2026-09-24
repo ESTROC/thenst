@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --orange: #d95325;
+    --orange-hover: #bc3f18;
+    --ink: #171b22;
+    --ink-dark: #111419;
+    --ink-card: #181c23;
+    --paper: #f7f6f2;
+    --paper-card: #eceae3;
+    --paper-hover: #efede6;
+    --muted: #737a83;
+    --muted-light: #9ba1a9;
+    --muted-dark: #4f555d;
+    --line: #e5e3db;
+    --line-dark: #3b414a;
+
+    --background: 45 20% 97%;
+    --foreground: 220 20% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 11%;
+    --primary: 15 72% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 45 15% 92%;
+    --secondary-foreground: 220 20% 11%;
+    --muted-bg: 45 15% 92%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 15 72% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 45 12% 88%;
+    --input: 45 12% 88%;
+    --ring: 15 72% 50%;
+    --radius: 0.25rem;
+  }
+}
+
+/* Institutional Typography & Elements */
+.font-serif {
+  font-family: var(--font-serif), 'Instrument Serif', Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Container & Grid utilities matching TheNST Institutional */
+.nst-container {
+  width: min(1220px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* Institutional Eyebrow */
+.eyebrow {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.eyebrow-orange {
+  color: var(--orange);
+}
+
+.dark-band .eyebrow {
+  color: #a7adb5;
+}
+
+/* Editorial Headings */
+.editorial-title {
+  font-size: clamp(48px, 6.5vw, 88px);
+  line-height: 0.94;
+  letter-spacing: -3.5px;
+  font-weight: 500;
+}
+
+.editorial-title em, .serif-italic {
+  font-family: var(--font-serif), 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -1.5px;
+}
+
+/* Capability Radar Grid Texture */
+.network-grid-bg {
+  background-image: 
+    linear-gradient(#2a3038 1px, transparent 1px),
+    linear-gradient(90deg, #2a3038 1px, transparent 1px);
+  background-size: 38px 38px;
+  opacity: 0.35;
+}
+
+/* Tactical Pulse Dot */
+@keyframes nst-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(217, 83, 37, 0.7);
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.9;
+    box-shadow: 0 0 16px 4px rgba(217, 83, 37, 0.4);
+  }
+}
+
+.animate-nst-pulse {
+  animation: nst-pulse 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Seamless Marquee & Transitions */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-scroll 45s linear infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111419;
+}
+::-webkit-scrollbar-thumb {
+  background: #3b414a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d95325;
+}

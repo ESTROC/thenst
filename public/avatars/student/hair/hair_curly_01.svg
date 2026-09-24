@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+<circle cx="38.5" cy="14" r="5" fill="var(--hair)"/>
+<circle cx="50" cy="10.5" r="5.5" fill="var(--hair)"/>
+<circle cx="61.5" cy="14" r="5" fill="var(--hair)"/>
+<circle cx="34.5" cy="21" r="4.5" fill="var(--hair)"/>
+<circle cx="65.5" cy="21" r="4.5" fill="var(--hair)"/>
+<path d="M35 24 Q35 12 50 12 Q65 12 65 24 Q57 16 50 16 Q43 16 35 24 Z" fill="var(--hair)"/>
+</svg>

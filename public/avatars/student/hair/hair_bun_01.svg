@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+<circle cx="50" cy="8" r="5.5" fill="var(--hair)"/>
+<path d="M35.8 26 Q34.5 10.5 50 10.5 Q65.5 10.5 64.2 26 Q60 16 50 15.8 Q40 16 35.8 26 Z" fill="var(--hair)"/>
+</svg>

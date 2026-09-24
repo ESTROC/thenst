@@ -1,0 +1,185 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: check if user is authenticated
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Helper: get user role safely
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // Helper: check if user has specific roles
+    function isRole(role) {
+      return isAuth() && getUserRole() == role;
+    }
+
+    function isAdminOrAbove() {
+      let role = getUserRole();
+      return role == 'admin' || role == 'superadmin';
+    }
+
+    function isHROrAbove() {
+      let role = getUserRole();
+      return role == 'hr' || role == 'admin' || role == 'superadmin';
+    }
+
+    function isInternOrAbove() {
+      let role = getUserRole();
+      return role == 'intern' || role == 'admin' || role == 'superadmin';
+    }
+
+    function isAgencyOrAbove() {
+      let role = getUserRole();
+      return role == 'agency' || role == 'admin' || role == 'superadmin';
+    }
+
+    // USERS collection
+    match /users/{userId} {
+      allow get, list: if isAuth();
+      allow create: if isAuth() && request.auth.uid == userId;
+      allow update: if isAuth() && (
+        isAdminOrAbove() || 
+        (request.auth.uid == userId && 
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status']) &&
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['kycStatus']) || request.resource.data.kycStatus == 'pending')
+        )
+      );
+      allow delete: if isAuth() && isAdminOrAbove();
+    }
+
+    // KYC collections (Guard, HR, Agency)
+    match /kyc/{guardId} {
+      allow read: if isAuth() && (request.auth.uid == guardId || isHROrAbove() || isInternOrAbove());
+      allow create: if isAuth() && request.auth.uid == guardId;
+      allow update: if isAuth() && (request.auth.uid == guardId || isHROrAbove());
+      allow delete: if isAuth() && isAdminOrAbove();
+    }
+
+    match /hr_kyc/{userId} {
+       allow read: if isAuth() && (request.auth.uid == userId || isHROrAbove() || isInternOrAbove());
+       allow create: if isAuth() && request.auth.uid == userId;
+       allow update: if isAuth() && (request.auth.uid == userId || isAdminOrAbove());
+       allow delete: if isAuth() && isAdminOrAbove();
+    }
+    
+    match /agency_kyc/{userId} {
+       allow read: if isAuth() && (request.auth.uid == userId || isHROrAbove() || isInternOrAbove());
+       allow create: if isAuth() && request.auth.uid == userId;
+       allow update: if isAuth() && (request.auth.uid == userId || isAdminOrAbove());
+       allow delete: if isAuth() && isAdminOrAbove();
+    }
+    
+    // Transactions
+    match /transactions/{transactionId} {
+      allow create: if isAuth();
+      allow read: if isAuth() && (isAdminOrAbove() || (resource != null && (resource.data.userId == request.auth.uid || resource.data.hrId == request.auth.uid)));
+      allow update: if isAuth() && (isAdminOrAbove() || (resource != null && (resource.data.userId == request.auth.uid || resource.data.hrId == request.auth.uid)));
+    }
+    
+    // Hiring Requests
+    match /hiring_requests/{requestId} {
+      allow create: if isAuth();
+      allow read: if isAuth() && (
+        isInternOrAbove() || 
+        isHROrAbove() || 
+        resource.data.hrId == request.auth.uid || 
+        resource.data.guardId == request.auth.uid || 
+        resource.data.agencyId == request.auth.uid
+      );
+      allow update: if isAuth() && (isAdminOrAbove() || (resource != null && (
+        resource.data.hrId == request.auth.uid || 
+        resource.data.guardId == request.auth.uid ||
+        resource.data.agencyId == request.auth.uid
+      )));
+    }
+    
+    // Subcollections
+    match /users/{userId}/unlocked_guards/{guardId} {
+        allow read, write: if isAuth() && (request.auth.uid == userId || isAdminOrAbove());
+    }
+    
+    match /users/{userId}/notifications/{notificationId} {
+        allow read, update, delete: if isAuth() && request.auth.uid == userId;
+        allow create: if isAuth(); 
+    }
+
+    // System & Utilities
+    match /system/{allPaths=**} {
+        allow read: if true;
+        allow write: if isAdminOrAbove();
+    }
+
+    match /mails/{mailId} {
+        allow create: if isAuth();
+        allow read: if isAuth() && (isAdminOrAbove() || (resource != null && resource.data.to == request.auth.token.email));
+    }
+
+    // Chat System
+    match /chat_rooms/{roomId} {
+      allow create: if isAuth(); 
+      allow read, update: if isAuth() && (
+        isAdminOrAbove() || 
+        isInternOrAbove() ||
+        isHROrAbove() ||
+        (resource == null) || (
+          resource.data.hrId == request.auth.uid || 
+          resource.data.guardId == request.auth.uid ||
+          resource.data.agencyId == request.auth.uid
+        )
+      );
+      
+      match /messages/{messageId} {
+        allow read: if isAuth() && (isAdminOrAbove() || 
+          get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.hrId == request.auth.uid || 
+          get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.guardId == request.auth.uid ||
+          get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.agencyId == request.auth.uid);
+        allow create: if isAuth() && request.auth.uid == request.resource.data.senderId;
+      }
+    }
+
+    // Marketplace
+    match /jobs/{jobId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && (isHROrAbove() || isRole('intern'));
+      allow update, delete: if isAuth() && (isAdminOrAbove() || (resource != null && resource.data.hrId == request.auth.uid));
+    }
+
+    match /job_applications/{applicationId} {
+      allow create: if isAuth(); 
+      allow read: if isAuth() && (
+        isInternOrAbove() || 
+        isHROrAbove() ||
+        request.auth.uid == resource.data.guardId || 
+        request.auth.uid == resource.data.hrId || 
+        request.auth.uid == resource.data.agencyId
+      );
+      allow update: if isAuth() && (isAdminOrAbove() || (resource != null && resource.data.hrId == request.auth.uid));
+    }
+
+
+    // ─── NST Learn ────────────────────────────────────────────────────────────
+    // Courses — public catalog; only admins/superadmins can write.
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAuth() && isAdminOrAbove();
+    }
+
+    // Enrollments — users own their enrollment records.
+    match /enrollments/{enrollmentId} {
+      allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdminOrAbove());
+      allow create, update: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuth() && isAdminOrAbove();
+    }
+    // ──────────────────────────────────────────────────────────────────────────
+    // System Logs (Audit Trail)
+    match /system_logs/{logId} {
+      allow create: if true; 
+      allow read: if isAuth() && isAdminOrAbove();
+    }
+  }
+}
+
