@@ -167,15 +167,23 @@ export function PhoneOtpModal({
     }
 
     // CRITICAL: clear() only detaches Firebase's internal widget reference.
-    // It does NOT reset the DOM container. The reCAPTCHA iframe/widget stays
-    // inside the container element, so the next `new RecaptchaVerifier()` on
-    // the same container hits "reCAPTCHA has already been rendered in this
-    // element". We must wipe the container's children manually so Google's
-    // reCAPTCHA script sees a clean element.
+    // It does NOT reset the DOM container. Even after wiping innerHTML, the
+    // Google reCAPTCHA script's internal widget registry may still associate
+    // the old widget ID with that exact DOM node identity, causing the next
+    // new RecaptchaVerifier() on the same element to throw:
+    //   "reCAPTCHA has already been rendered in this element"
+    //
+    // The only reliable fix is to REPLACE the container element entirely.
+    // A brand-new DOM node has no entry in Google's widget registry, so
+    // RecaptchaVerifier always renders into it cleanly.
     const container = document.getElementById(RECAPTCHA_CONTAINER_ID);
-    if (container) {
-      container.innerHTML = "";
-      otpLog("destroyVerifier: DOM container reset (innerHTML cleared)");
+    if (container && container.parentNode) {
+      const replacement = document.createElement("div");
+      replacement.id = RECAPTCHA_CONTAINER_ID;
+      replacement.style.cssText = container.style.cssText;
+      replacement.setAttribute("aria-hidden", "true");
+      container.parentNode.replaceChild(replacement, container);
+      otpLog("destroyVerifier: DOM container replaced with fresh element");
     }
   }
 
