@@ -52,7 +52,7 @@ export async function uploadResume(file: File, userId: string): Promise<string> 
     }
 }
 
-export async function uploadKYCDocument(file: File, userId: string, type: "id_proof" | "incorporation" | "logo"): Promise<string> {
+export async function uploadKYCDocument(file: File, userId: string, type: "id_proof" | "incorporation" | "logo" | "gst" | "psara"): Promise<string> {
     try {
         if (file.size > 5 * 1024 * 1024) {
             throw new Error("File size must be less than 5MB");
@@ -60,6 +60,8 @@ export async function uploadKYCDocument(file: File, userId: string, type: "id_pr
         let folder = "hr_id_proofs";
         if (type === "incorporation") folder = "incorporation_certs";
         if (type === "logo") folder = "company_logos";
+        if (type === "gst") folder = "gst_certs";
+        if (type === "psara") folder = "psara_certs";
 
         const storageRef = ref(storage, `${folder}/${userId}/${Date.now()}_${file.name}`);
         const timeoutPromise = new Promise((_, reject) => {
