@@ -241,7 +241,7 @@ export default function AgencyDashboard() {
                 <CardContent className="space-y-4">
                     <div>
                         <p className="text-sm font-medium text-muted-foreground mb-2">Security Sectors</p>
-                        {profile.agencyDetails?.sectors && profile.agencyDetails.sectors.length > 0 ? (
+                        {profile?.agencyDetails?.sectors && profile.agencyDetails.sectors.length > 0 ? (
                             <div className="space-y-3">
                                 {profile.agencyDetails.sectors.map((sector, idx) => (
                                     <div key={idx} className="bg-muted/30 p-2 rounded-md border border-border/50">
@@ -260,7 +260,7 @@ export default function AgencyDashboard() {
                             </div>
                         ) : (
                             <div className="flex flex-wrap gap-2">
-                                {profile.agencyDetails?.specialties?.map((s, i) => (
+                                {profile?.agencyDetails?.specialties?.map((s, i) => (
                                     <Badge key={i} variant="secondary" className="bg-primary/10 text-primary border-primary/20">
                                         {s}
                                     </Badge>
@@ -270,7 +270,7 @@ export default function AgencyDashboard() {
                     </div>
                     <div>
                         <p className="text-sm font-medium text-muted-foreground mb-2">Service Locations</p>
-                        {profile.agencyDetails?.serviceLocations && profile.agencyDetails.serviceLocations.length > 0 ? (
+                        {profile?.agencyDetails?.serviceLocations && profile.agencyDetails.serviceLocations.length > 0 ? (
                             <div className="space-y-2">
                                 {profile.agencyDetails.serviceLocations.map((loc, i) => (
                                     <div key={i} className="text-sm border-l-2 border-primary/20 pl-2">
@@ -285,11 +285,11 @@ export default function AgencyDashboard() {
                     </div>
                     <div>
                         <p className="text-sm font-medium text-muted-foreground mb-1">Total Verified Capacity</p>
-                        <p className="text-2xl font-bold">{profile.agencyDetails?.totalCapacity || 0} Professionals</p>
+                        <p className="text-2xl font-bold">{profile?.agencyDetails?.totalCapacity || 0} Professionals</p>
                     </div>
                     <div>
                         <p className="text-sm font-medium text-muted-foreground mb-1">PSARA License</p>
-                        <p className="text-sm font-mono">{profile.agencyDetails?.psaraLicense || "Not provided"}</p>
+                        <p className="text-sm font-mono">{profile?.agencyDetails?.psaraLicense || "Not provided"}</p>
                     </div>
                 </CardContent>
             </Card>
