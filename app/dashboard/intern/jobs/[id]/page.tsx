@@ -64,7 +64,7 @@ export default function InternJobApplicantsPage() {
     setSubmittingStatus(true);
     try {
       const newStatus = job.status === "open" ? "closed" : "open";
-      const docRef = doc(db, "jobs", job.id);
+      const docRef = doc(db, "jobs", job.id ?? "");
       await updateDoc(docRef, { status: newStatus });
       setJob((prev) => prev ? { ...prev, status: newStatus } : null);
       toast.success(`Job successfully ${newStatus === "open" ? "reopened" : "closed"}!`);
@@ -154,7 +154,7 @@ export default function InternJobApplicantsPage() {
       const cleanTitle = roleToSave.startsWith("Other: ") ? roleToSave.replace("Other: ", "") : roleToSave;
       const titleToSave = cleanTitle || "Security Specialist";
 
-      const docRef = doc(db, "jobs", job.id);
+      const docRef = doc(db, "jobs", job.id ?? "");
       const updatedFields = {
         title: titleToSave,
         description: editDescription,
@@ -410,7 +410,7 @@ export default function InternJobApplicantsPage() {
                               variant="outline"
                               size="sm"
                               disabled={updatingAppId !== null}
-                              onClick={() => handleUpdateApplicationStatus(app.id, "rejected")}
+                              onClick={() => app.id && handleUpdateApplicationStatus(app.id, "rejected")}
                               className="rounded-xl border-red-200 text-red-650 hover:bg-red-50 text-xs px-3 font-semibold h-8"
                             >
                               Reject
@@ -418,7 +418,7 @@ export default function InternJobApplicantsPage() {
                             <Button
                               size="sm"
                               disabled={updatingAppId !== null}
-                              onClick={() => handleUpdateApplicationStatus(app.id, "accepted")}
+                              onClick={() => app.id && handleUpdateApplicationStatus(app.id, "accepted")}
                               className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 font-black h-8 shadow-sm"
                             >
                               {updatingAppId === app.id ? "Processing..." : "Accept"}

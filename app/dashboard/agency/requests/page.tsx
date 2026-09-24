@@ -109,7 +109,7 @@ export default function AgencyRequestsPage() {
       // If accepted, Auto-create a Chat Room
       if (newStatus === "accepted") {
         // Explicitly pass agencyId (profile.uid) to ensure persistent ID derivation works even for older requests
-        const roomId = await createChatRoom(requestId, { ...request, agencyId: profile.uid });
+        const roomId = await createChatRoom(requestId, { ...request, agencyId: profile?.uid ?? request.agencyId ?? "" });
         // Store the persistent room ID back in the request for easy frontend access
         await updateDoc(doc(db, "hiring_requests", requestId), { chatRoomId: roomId });
       }
@@ -304,13 +304,13 @@ function RequestGrid({ requests, emptyMessage, onUpdateStatus, router, profile }
               <Button
                 variant="outline"
                 className="flex-1 text-destructive hover:bg-destructive/10"
-                onClick={() => onUpdateStatus(request.id, "rejected")}
+                onClick={() => onUpdateStatus(request.id ?? "", "rejected")}
               >
                 <XCircle className="mr-2 h-4 w-4" /> Decline
               </Button>
               <Button
                 className="flex-1 bg-green-600 hover:bg-green-700"
-                onClick={() => onUpdateStatus(request.id, "accepted")}
+                onClick={() => onUpdateStatus(request.id ?? "", "accepted")}
               >
                 <CheckCircle className="mr-2 h-4 w-4" /> Accept Request
               </Button>

@@ -138,7 +138,7 @@ export default function AgencyProfileViewPage() {
               <div className="pt-6 border-t border-border/50">
                 <p className="text-sm text-muted-foreground mb-3 font-semibold uppercase tracking-wider">Specialties</p>
                 <div className="flex flex-wrap gap-2">
-                  {agency.specialties.map((specialty, index) => (
+                  {(agency.specialties ?? []).map((specialty, index) => (
                     <Badge key={index} variant="secondary" className="bg-indigo-50 text-indigo-700 border-indigo-100">
                       {specialty}
                     </Badge>

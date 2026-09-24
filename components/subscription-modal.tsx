@@ -431,6 +431,7 @@ export function SubscriptionModal({ open, onOpenChange, onSuccess }: Subscriptio
                                                                 createOrder={(_, actions) => {
                                                                     const usdAmount = (selectedPack.price / 83).toFixed(2);
                                                                     return actions.order.create({
+                                                                        intent: "CAPTURE",
                                                                         purchase_units: [{
                                                                             amount: { value: usdAmount, currency_code: "USD" },
                                                                             description: `${selectedPack.name} - ${selectedPack.credits} credits`,

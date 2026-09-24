@@ -75,7 +75,7 @@ export default function InternGuardDetailsPage() {
     }
 
     async function handleApplicationAction(newStatus: JobApplication["status"]) {
-        if (!application || !profile || !jobDetails || !guard) return;
+        if (!application || !application.id || !profile || !jobDetails || !guard) return;
         setProcessingApp(true);
         try {
             const { doc, updateDoc, addDoc, collection } = await import("firebase/firestore");

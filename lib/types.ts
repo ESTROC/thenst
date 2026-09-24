@@ -31,8 +31,8 @@ export interface UserProfile {
     logoUrl?: string;
   };
   kycStatus?: KYCStatus;
-  kycId?: string; // Reference to the KYC document
-  rejectionReason?: string; // Reason for KYC rejection
+  kycId?: string;
+  rejectionReason?: string;
   // Discovery fields synced from KYC for efficient filtering
   height?: string;
   weight?: string;
@@ -40,10 +40,11 @@ export interface UserProfile {
   yearsOfExperience?: string;
   preferredCity?: string;
   availabilityStatus?: string;
-  photoUrl?: string; // Optional profile photo
+  photoUrl?: string;
   createdAt: string;
   updatedAt?: string;
-  credits?: number; // Available view credits
+  credits?: number;
+  pendingCredits?: number;
   guardSubscription?: {
     plan: "basic" | "premium";
     status: "active" | "expired";
@@ -51,7 +52,7 @@ export interface UserProfile {
   };
   agencyDetails?: {
     totalCapacity: number;
-    specialties?: string[]; // Deprecated, use sectors
+    specialties?: string[];
     sectors?: { category: string; roles: string[] }[];
     gstNumber?: string;
     psaraLicense?: string;
@@ -75,7 +76,7 @@ export interface Transaction {
   type: "credits" | "subscription";
   creditsAdded?: number;
   paymentId?: string;
-  paymentMethod?: "paypal" | "qr_manual";
+  paymentMethod?: "paypal" | "qr_manual" | "bank_manual" | "cashfree" | "free_tier";
   status?: "pending" | "completed" | "rejected";
   timestamp: string;
   // Backward Compatibility (for now)
@@ -125,6 +126,9 @@ export interface KYCData {
   certifications?: string[];
   certificationUrls?: string[];
   languages?: string[];
+  // Agency-context fields occasionally stored on KYC docs
+  totalCapacity?: number;
+  sectors?: { category: string; roles: string[] }[];
   // Bank Details - Removed as per requirement
   // Metadata
   submittedAt: string;
@@ -220,6 +224,7 @@ export interface HiringRequest {
   selectedRoles?: string[];
   locationPreference?: string;
   chatRoomId?: string;
+  escrowAmount?: number;
 }
 export interface Package {
   id: string;
@@ -348,3 +353,17 @@ export interface SystemLog {
   timestamp: string; // ISO string for frontend, serverTimestamp for DB
   userAgent: string;
 }
+
+// Re-export learn types so data/* files can import from "@/lib/types"
+export type {
+  BannerCard,
+  BannerCategory,
+  Course,
+  CourseDetail,
+  Module,
+  PricingTier,
+  AccentColor,
+  TierPricing,
+  Lesson,
+  CourseReview,
+} from "@/lib/learn/types";

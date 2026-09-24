@@ -43,7 +43,7 @@ import type { UserRole, ChatRoom } from "@/lib/types";
 interface NavItem {
   label: string;
   href: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 function getNavItems(role: UserRole): NavItem[] {

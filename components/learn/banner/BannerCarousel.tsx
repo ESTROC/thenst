@@ -4,7 +4,7 @@ import { ArrowRight, Sparkles, Tag, Megaphone, Lightbulb, Video } from "lucide-r
 import { BannerCard, BannerCategory } from "@/lib/learn/types";
 import { accentMap, accentGradient } from "@/lib/learn/accent";
 
-const icons: Record<BannerCategory, React.ElementType> = {
+const icons: Record<BannerCategory, React.ComponentType<{ size?: number }>> = {
   Featured: Sparkles,
   Offer: Tag,
   Announcement: Megaphone,

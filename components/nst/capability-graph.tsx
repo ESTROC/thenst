@@ -10,7 +10,7 @@ interface NodeData {
   x3d: number;
   y3d: number;
   z3d: number;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   descriptor: string;
   description: string;
 }

@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles, Check } from "lucide-react";
-import { Course, TierPricing } from "@/lib/learn/types";
+import { Course, TierPricing, AccentColor } from "@/lib/learn/types";
 import { pricingTiers } from "@/data/pricing";
 import { accentMap } from "@/lib/learn/accent";
 
@@ -38,7 +38,7 @@ export function CoursePricingModal({ course, onClose }: { course: Course | null;
                 <p className="mt-1 text-sm text-[var(--ink-soft)]">Pricing tailored to who you are.</p>
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
                   {pricingTiers.map((tier) => {
-                    const a = accentMap[tier.accent];
+                    const a = accentMap[tier.accent as AccentColor];
                     const live = course.tierPricing?.[tierKeyById[tier.id]];
                     const price = typeof live === "number" ? live : tier.price;
                     return (
@@ -48,7 +48,7 @@ export function CoursePricingModal({ course, onClose }: { course: Course | null;
                         <div className="mt-3 flex items-baseline gap-1"><span className="font-display text-2xl font-bold text-[var(--ink)]">{price === 0 ? "Free" : `₹${price.toLocaleString("en-IN")}`}</span>{price !== 0 && <span className="text-xs text-[var(--ink-soft)]">/ {tier.unit}</span>}</div>
                         <p className="mt-0.5 text-xs text-[var(--ink-soft)]">{tier.note}</p>
                         <ul className="mt-4 flex-1 space-y-2">
-                          {tier.perks.map((perk) => (<li key={perk} className="flex items-start gap-2 text-sm text-[var(--ink)]"><Check size={15} className={`mt-0.5 shrink-0 ${a.text}`} />{perk}</li>))}
+                          {tier.perks.map((perk: string) => (<li key={perk} className="flex items-start gap-2 text-sm text-[var(--ink)]"><Check size={15} className={`mt-0.5 shrink-0 ${a.text}`} />{perk}</li>))}
                         </ul>
                         <button className={`mt-5 rounded-lg py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 ${a.bg}`}>Get started</button>
                       </div>

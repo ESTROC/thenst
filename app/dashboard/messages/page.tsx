@@ -135,12 +135,15 @@ function MessagesContent() {
             return;
         }
 
+        // Capture the non-null room so the async closure below doesn't
+        // re-check the state variable (which TypeScript still considers
+        // possibly-null after the guard above).
+        const room = activeRoom;
+
         async function fetchRequest() {
             try {
-                // If the user is viewing the specific chat room they navigated to, and there is a targetReq, use it.
-                // Otherwise, fallback to the chat room's latest requestId.
-                const isTargetRoom = activeRoom.id === targetChat || activeRoom.guardId === targetChat;
-                const reqIdToFetch = (isTargetRoom && targetReq) ? targetReq : activeRoom.requestId;
+                const isTargetRoom = room.id === targetChat || room.guardId === targetChat;
+                const reqIdToFetch = (isTargetRoom && targetReq) ? targetReq : room.requestId;
                 
                 const docRef = doc(db, "hiring_requests", reqIdToFetch);
                 const snap = await getDoc(docRef);

@@ -72,7 +72,7 @@ export default function InternDashboard() {
       
       const matchesCity = cityFilter === "all" || g.preferredCity === cityFilter;
       
-      const matchesExp = (g.yearsOfExperience || 0) >= minExp;
+      const matchesExp = (Number(g.yearsOfExperience) || 0) >= minExp;
  
       return matchesSearch && matchesCity && matchesExp;
     });
@@ -256,7 +256,7 @@ export default function InternDashboard() {
                           <div className="space-y-0.5">
                             <div className="flex items-center gap-2">
                               <span className="font-semibold text-slate-800">{g.fullName}</span>
-                              {g.yearsOfExperience && g.yearsOfExperience >= 5 && (
+                              {g.yearsOfExperience && Number(g.yearsOfExperience) >= 5 && (
                                 <Badge className="bg-yellow-50 text-yellow-700 hover:bg-yellow-50 border border-yellow-200/50 flex items-center gap-0.5 text-[9px] font-black tracking-wider uppercase px-1.5 py-0.5">
                                   <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
                                   Elite

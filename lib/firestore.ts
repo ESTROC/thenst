@@ -13,9 +13,10 @@ import {
   orderBy,
   getCountFromServer,
   limit,
+  type FieldValue,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import type { UserProfile, KYCData, HrKYCData, UserRole, UserStatus, KYCStatus, HiringRequest, SystemConfig, SystemHealthStatus, DashboardStats, Notification, ChatRoom, Message, Transaction, Job, JobApplication } from "@/lib/types";
+import type { UserProfile, KYCData, HrKYCData, UserRole, UserStatus, KYCStatus, HiringRequest, SystemConfig, SystemHealthStatus, DashboardStats, Notification, ChatRoom, Message, Transaction, Job, JobApplication, SystemLog } from "@/lib/types";
 import { sendEmail } from "@/lib/email";
 
 const APP_NAMESPACE = process.env.NEXT_PUBLIC_APP_NAMESPACE || "thenst";
@@ -220,7 +221,7 @@ export async function updateKYCStatus(
   if (rejectionReason) {
     updateData.rejectionReason = rejectionReason;
   }
-  await updateDoc(doc(db, "kyc", guardId), updateData);
+  await updateDoc(doc(db, "kyc", guardId), updateData as Record<string, FieldValue | Partial<unknown> | undefined>);
   await updateDoc(doc(db, "users", guardId), {
     updatedAt: new Date().toISOString(),
   });
@@ -349,7 +350,7 @@ export async function updateHrKYCStatus(
   if (rejectionReason) {
     updateData.rejectionReason = rejectionReason;
   }
-  await updateDoc(doc(db, "hr_kyc", hrId), updateData);
+  await updateDoc(doc(db, "hr_kyc", hrId), updateData as Record<string, FieldValue | Partial<unknown> | undefined>);
 
   const finalUpdate: Record<string, any> = {
     kycStatus: status,
@@ -519,7 +520,7 @@ export async function updateAgencyKYCStatus(
   if (rejectionReason) {
     updateData.rejectionReason = rejectionReason;
   }
-  await updateDoc(doc(db, "agency_kyc", agencyId), updateData);
+  await updateDoc(doc(db, "agency_kyc", agencyId), updateData as Record<string, FieldValue | Partial<unknown> | undefined>);
 
   const finalUpdate: Record<string, any> = {
     kycStatus: status,
@@ -1059,7 +1060,7 @@ export async function purchaseCredits(
       type: "credits",
       creditsAdded: credits,
       paymentId: paymentId || undefined,
-      paymentMethod,
+      paymentMethod: paymentMethod as Transaction["paymentMethod"],
       status: txStatus,
       // Legacy support for backward compatibility if needed
       hrId,
@@ -1188,9 +1189,9 @@ export async function getSalesStats() {
     const snapshot = await getDocs(collection(db, "transactions"));
     let transactions = snapshot.docs.map(doc => doc.data() as Transaction);
     
-    // Hide internal credit usage logs and any malformed legacy transactions
+    // Hide malformed legacy transactions
     transactions = transactions.filter(t => 
-        t.type !== "credit_deduction" && 
+        (t.type === "credits" || t.type === "subscription") && 
         (t.type || t.userId || t.hrId)
     );
 

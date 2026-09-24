@@ -266,14 +266,18 @@ export default function SuperAdminHRPage() {
             {selectedKyc?.status === "pending" && (
               <div className="flex gap-2">
                 <Button variant="destructive" onClick={() => {
-                  const user = pendingHRs.find(h => h.uid === selectedKyc.hrId);
+                  const kyc = selectedKyc;
+                  if (!kyc) return;
+                  const user = pendingHRs.find(h => h.uid === kyc.hrId);
                   if (user) handleApproval(user, false);
                   setSelectedKyc(null);
                 }}>
                   Reject Application
                 </Button>
                 <Button className="bg-green-600 hover:bg-green-700" onClick={() => {
-                  const user = pendingHRs.find(h => h.uid === selectedKyc.hrId);
+                  const kyc = selectedKyc;
+                  if (!kyc) return;
+                  const user = pendingHRs.find(h => h.uid === kyc.hrId);
                   if (user) handleApproval(user, true);
                   setSelectedKyc(null);
                 }}>
@@ -283,7 +287,9 @@ export default function SuperAdminHRPage() {
             )}
             {selectedKyc?.status !== "pending" && (
               <Button variant="destructive" onClick={() => {
-                const user = verifiedHRs.find(h => h.uid === selectedKyc.hrId);
+                const kyc = selectedKyc;
+                if (!kyc) return;
+                const user = verifiedHRs.find(h => h.uid === kyc.hrId);
                 if (user) handleApproval(user, false);
                 setSelectedKyc(null);
               }}>

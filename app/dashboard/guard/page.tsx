@@ -398,7 +398,7 @@ export default function GuardDashboard() {
 
   const SubscriptionStatusCard = () => {
     const hasActivePlan = profile?.guardSubscription?.status === "active";
-    const planName = profile?.guardSubscription?.plan === "yearly" ? "Yearly Premium" : "Monthly Basic";
+    const planName = profile?.guardSubscription?.plan === "premium" ? "Yearly Premium" : "Monthly Basic";
     const expiresAt = profile?.guardSubscription?.expiresAt 
       ? new Date(profile.guardSubscription.expiresAt).toLocaleDateString()
       : null;
